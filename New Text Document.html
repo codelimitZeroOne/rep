@@ -1,0 +1,145 @@
+#include <stdio.h>
+void swap(float* a, float* b)
+  {
+    float t = *a;
+    *a = *b;
+    *b = t;
+  }
+int partition (float arr[], float wt[], float pf[],  int l, int h)
+{
+    float pivot = arr[h];
+    int i = (l - 1);
+    int j;
+    for (j = l; j <= h- 1; j++)
+    {
+        if (arr[j]> pivot)
+        {
+            i++;
+            swap(&arr[i], &arr[j]);swap(&wt[i], &wt[j]);swap(&pf[i], &pf[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[h]);swap(&wt[i+1], &wt[h]);swap(&pf[i+1], &pf[h]);
+    return (i + 1);
+}
+void quickSort(float arr[], float wt[], float pf[],  int l, int h)
+{
+    if (l < h)
+    {
+        int pi = partition(arr,wt, pf,  l, h);
+        quickSort(arr,wt,pf,  l, pi - 1);
+        quickSort(arr, wt,pf,  pi + 1, h);
+    }
+}
+int main() {
+	int num,i,j;
+	float profit[100],weight[100],ratio[100],index[100],temp,finalp=0,knap=0;
+	printf("Enter no of items ");
+	scanf("%d",&num);
+	printf("Enter size of knapsack ");
+	scanf("%f",&knap);
+	printf("Enter profits and weights :\n ");	
+	for(i=0;i<num;i++)
+	{
+		scanf("%f",&profit[i]);
+		scanf("%f",&weight[i]);		
+	}
+	
+		for(i=0;i<num;i++)
+	{
+ratio[i]=profit[i]/weight[i];	
+	}
+	
+quickSort(ratio, weight, profit, 0, num-1);
+	for(i=0;i<num;i++)
+	{
+		if(knap>0 && weight[i]<=knap)
+		{
+			knap=knap-weight[i];
+			finalp=finalp+profit[i];
+		}
+		else{ break;
+		}
+		}
+		if(knap>0)
+		{
+			finalp=finalp+profit[i]*(knap/weight[i]);
+		}
+printf("final %f",finalp);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////
+#include <limits.h> 
+#include <stdio.h>  
+#define V 9 
+
+int minDistance(int dist[], bool sptSet[]) 
+{ 
+    int min = INT_MAX, min_index; 
+  
+    for (int v = 0; v < V; v++) 
+        if (sptSet[v] == false && dist[v] <= min) 
+            min = dist[v], min_index = v; 
+  
+    return min_index; 
+} 
+
+int printSolution(int dist[], int n) 
+{ 
+    printf("Vertex   Distance from Source\n"); 
+    for (int i = 0; i < V; i++) 
+        printf("%d -> %d\n", i, dist[i]); 
+} 
+ 
+ 
+ 
+  
+void dijkstra(int graph[V][V], int src) 
+{ 
+    int dist[V]; 
+  
+    bool sptSet[V];
+    for (int i = 0; i < V; i++) 
+        dist[i] = INT_MAX, sptSet[i] = false; 
+    dist[src] = 0; 
+  
+    for (int count = 0; count < V - 1; count++) { 
+        int u = minDistance(dist, sptSet); 
+
+        sptSet[u] = true; 
+
+        for (int v = 0; v < V; v++) 
+
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX 
+                && dist[u] + graph[u][v] < dist[v]) 
+                dist[v] = dist[u] + graph[u][v]; 
+    } 
+    printSolution(dist, V); 
+} 
+
+int main() 
+{ 
+    int graph[V][V] = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 }, 
+                        { 4, 0, 8, 0, 0, 0, 0, 11, 0 }, 
+                        { 0, 8, 0, 7, 0, 4, 0, 0, 2 }, 
+                        { 0, 0, 7, 0, 9, 14, 0, 0, 0 }, 
+                        { 0, 0, 0, 9, 0, 10, 0, 0, 0 }, 
+                        { 0, 0, 4, 14, 10, 0, 2, 0, 0 }, 
+                        { 0, 0, 0, 0, 0, 2, 0, 1, 6 }, 
+                        { 8, 11, 0, 0, 0, 0, 1, 0, 7 }, 
+                        { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };                 
+	int src;
+	src=0;
+    dijkstra(graph,	src); 
+    return 0; 
+} 
